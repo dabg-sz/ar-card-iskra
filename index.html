@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords"
+      content="Да България, Демократична България, Избори 2019, Картичка, Добавена реалност, Кампания">
+    <link rel="stylesheet" href="style.css">
+    <script>
+      console.warn = console.log = console.error = function () { };
+      window.addEventListener("touchstart", touchHandler, false);
+      function touchHandler(event) {
+        if (event.touches.length > 1) {
+          event.preventDefault()
+        }
+      }
+    </script>
+    <!-- A-FRAME -->
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script>
+      var loaded = false;
+      AFRAME.registerComponent('vidhandler', {
+        init: function () {
+          this.vid = document.querySelector("#vid");
+          this.toggle = false;
+          this.pause();
+        },
+        tick: function () {
+          if (!loaded) {
+            return;
+          }
+
+          if (this.el.object3D.visible == true) {
+            if (!this.toggle) {
+              this.toggle = true;
+              this.vid.play();
+            }
+          } else {
+            this.toggle = false;
+            this.vid.pause();
+          }
+        }
+      });
+      function initAframe() {
+        var welcome = document.getElementById('welcome'),
+          header = document.getElementById('header');
+        vid.load();
+        loaded = true;
+        welcome.classList.add('hide');
+        header.classList.remove('hide');
+      }
+
+      function failed() {
+        //
+      }
+
+      function refrespage() {
+        location.reload();
+      }
+    </script>
+  </head>
+  <body>
+    <div id="welcome">
+      <img class="logo" src="logo.png">
+      <h3>
+        За по-доброто<br>смарт бъдеще<br>на Стара Загора
+      </h3>
+      <button onclick="initAframe()" id="btnStart">Старт</button>
+    </div>
+    <div id="header" class="hide">
+      <div class="imgon">
+        <img class="imgss img-responsive" src="pattern-marker.png">
+        <span class="imgname">Сканирай ме</span>
+      </div>
+    </div>
+    <a-scene embedded
+      artoolkit='sourceType: webcam; detectionMode: mono; maxDetectionRate: 30; canvasWidth: 100; canvasHeight: 100;'>
+      <a-assets>
+        <video preload="metadata" id="vid" onerror="failed(event)" loop="true" crossorigin webkit-playsinline playsinline>
+          <source type="video/mp4" src="video.mp4">
+          <h3>Грешка : Браузърът на вашият телефон не потдържа видео формата :(.</h3>
+        </video>
+      </a-assets>
+      <a-marker crossorigin="anonymous" id="memarker" type="pattern" url="pattern-marker.patt" vidhandler>
+        <a-plane position='0 0.1 0' scale="1.3 1.3 1.3" rotation="-90 0 0"
+          material='transparent:true;alphaTest:0;src:#vid'></a-plane>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
